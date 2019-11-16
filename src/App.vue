@@ -1,8 +1,10 @@
 <template>
   <div id="app">
-    <keep-alive>
-      <router-view/>
-    </keep-alive>
+    <div style="overflow: auto">
+      <keep-alive>
+        <router-view/>
+      </keep-alive>
+    </div>
     <div class="tabbar" v-show="show">
       <van-tabbar v-model="active"
                   route>
@@ -42,5 +44,8 @@ export default {
     height: 100%
   .van-nav-bar__text{
     font-size 14px
+  }
+  .tabbar{
+    height: 1.333333rem
   }
 </style>
