@@ -24,15 +24,15 @@
             <span class="empty" @click="empty">清空</span>
           </div>
           <div class="list-content" ref="listContent">
-              <div class="food" v-for="(food,index) in goods">
+              <div class="food" v-for="(food,index) in goodsList">
                 <div style="padding: 12px 0;" v-show="food.goods_num">
                   <span class="name">{{food.goodsName}}</span>
                   <div class="price">
-                    <span>￥{{food.goods_price * food.goods_num}}</span>
+                    <span>￥{{food.goodsPrice * food.goods_num}}</span>
                   </div>
                   <div class="button">
                     <van-button round type="info" size="small" style="min-width: 0.8rem;" v-show="food.goods_num" @click="decreaseGoods(index)">-</van-button>
-                    <span v-show="food.goods_num">{{food.goods_num}}</span>
+                    <span v-show="food.goods_num" class="goods-num">{{food.goods_num}}</span>
                     <van-button round type="info" size="small" style="min-width: 0.8rem;" @click="addGoods(index)">+</van-button>
                   </div>
                 </div>
@@ -51,7 +51,7 @@
   export default {
     name: "ShopCart",
     props:{
-      goods: Array
+        goodsList: Array
     },
     data () {
       return{
@@ -62,16 +62,16 @@
     computed: {
       totalCount() {
         let count = 0;
-        this.goods.forEach((goods) => {
+        this.goodsList.forEach((goods) => {
           count += goods.goods_num;
         });
         return count;
       },
       totalPrice() {
         let price = 0;
-        this.goods.forEach((goods) => {
+        this.goodsList.forEach((goods) => {
           if (goods.goods_num) {
-            price += goods.goods_price * goods.goods_num;
+            price += goods.goodsPrice * goods.goods_num;
           }
         });
         if (price===0){
@@ -93,19 +93,20 @@
       },
       selected() {
         this.selectedFoods = [];
-        this.goods.forEach((food) =>{
+        this.goodsList.forEach((food) =>{
           if (food.goods_num){
             this.selectedFoods.push(food)
           }
         })
       },
       addGoods(index) {
-        this.goods[index].goods_num++
+        this.goodsList[index].goods_num++;
       },
       decreaseGoods(index) {
-        if (this.goods[index].goods_num>0){
-          this.goods[index].goods_num--
+        if (this.goodsList[index].goods_num>0){
+          this.goodsList[index].goods_num--
         }
+        this.selected();
       },
       empty() {
         this.selectedFoods = [];
@@ -261,6 +262,9 @@
           }
           .button{
             float: right
+            .goods-num{
+              font-size .4rem
+            }
           }
         }
       }

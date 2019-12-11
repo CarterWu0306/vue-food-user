@@ -10,9 +10,10 @@
       <van-rate
         v-model="value"
         allow-half
+        :readonly="true"
         void-icon="star"
-        void-color="#eee"
-      />
+        void-color="#eee">
+      </van-rate>
       <div class="card-font-total">
         共{{total}}条评价
       </div>

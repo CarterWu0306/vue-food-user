@@ -6,113 +6,56 @@
       left-arrow
       @click-left="onClickLeft">
     </van-nav-bar>
-    <menu-body :goods="goods" :labelList="labelList"></menu-body>
-    <shop-cart :goods="goods"></shop-cart>
+    <menu-body :goodsList="goodsList" :labelList="labelList" v-if="flag"></menu-body>
+    <shop-cart :goodsList="goodsList"></shop-cart>
   </div>
 </template>
 
 <script>
 import ShopCart from './components/ShopCart'
 import menuBody from './components/MenuBody'
+import { getAllGoodsList, selGoodsLabel } from '@/api/goods'
 export default {
-  name: 'goods',
-  components: {
-    menuBody,
-    ShopCart
-  },
-  data () {
-    return{
-      labelList:[
-        {
-          "label": "招牌菜",
-          "num": "30"
+    name: 'goods',
+    components: {
+      menuBody,
+      ShopCart
+    },
+    data () {
+      return{
+          labelList: [],
+          goodsList: [],
+          flag: false
+      }
+    },
+    methods:{
+        getAllGoodsList(){
+            getAllGoodsList().then(response => {
+                const data = response.data;
+                data.forEach(item => {
+                    item.goods_num = 0
+                });
+                this.goodsList = data
+                this.flag = true
+            }).catch(() => {
+
+            })
         },
-        {
-          "label": "海鲜",
-          "num": "31"
+        selGoodsLabel(){
+            selGoodsLabel().then(response => {
+                this.labelList = response.data
+            }).catch((err) => {
+                console.log(err)
+            })
+        },
+        onClickLeft(){
+            this.$router.push({ path:'/'})
         }
-      ],
-      goods: [
-        {
-          "goods_id": 1,
-          "goodsName": "北京烤鸭",
-          "goodsLabel": "招牌菜",
-          "goods_stock": 100,
-          "goods_num": 0,
-          "goods_price": 18,
-          "goodsImg": "http://images.wukate.com/8ca24b25-94e9-443b-af23-f92ec5742c35539345966153592340.jpg"
-        },
-        {
-          "goods_id": 2,
-          "goodsName": "水煮肉片",
-          "goodsLabel": "招牌菜",
-          "goods_stock": 100,
-          "goods_num": 0,
-          "goods_price": 18,
-          "goodsImg": "http://images.wukate.com/8ca24b25-94e9-443b-af23-f92ec5742c35539345966153592340.jpg"
-        },
-        {
-          "goods_id": 3,
-          "goodsName": "皮皮虾",
-          "goodsLabel": "海鲜",
-          "goods_stock": 100,
-          "goods_num": 0,
-          "goods_price": 18,
-          "goodsImg": "http://images.wukate.com/8ca24b25-94e9-443b-af23-f92ec5742c35539345966153592340.jpg"
-        },
-        {
-          "goods_id": 4,
-          "goodsName": "皮皮虾",
-          "goodsLabel": "海鲜",
-          "goods_stock": 0,
-          "goods_num": 0,
-          "goods_price": 18,
-          "goodsImg": "http://images.wukate.com/8ca24b25-94e9-443b-af23-f92ec5742c35539345966153592340.jpg"
-        },
-        {
-          "goods_id": 5,
-          "goodsName": "皮皮虾",
-          "goodsLabel": "海鲜",
-          "goods_stock": 100,
-          "goods_num": 0,
-          "goods_price": 18,
-          "goodsImg": "http://images.wukate.com/8ca24b25-94e9-443b-af23-f92ec5742c35539345966153592340.jpg"
-        },
-        {
-          "goods_id": 6,
-          "goodsName": "皮皮虾",
-          "goodsLabel": "海鲜",
-          "goods_stock": 100,
-          "goods_num": 0,
-          "goods_price": 18,
-          "goodsImg": "http://images.wukate.com/8ca24b25-94e9-443b-af23-f92ec5742c35539345966153592340.jpg"
-        },
-        {
-          "goods_id": 7,
-          "goodsName": "皮皮虾",
-          "goodsLabel": "海鲜",
-          "goods_stock": 100,
-          "goods_num": 0,
-          "goods_price": 18,
-          "goodsImg": "http://images.wukate.com/8ca24b25-94e9-443b-af23-f92ec5742c35539345966153592340.jpg"
-        },
-        {
-          "goods_id": 8,
-          "goodsName": "皮皮虾",
-          "goodsLabel": "海鲜",
-          "goods_stock": 100,
-          "goods_num": 0,
-          "goods_price": 18,
-          "goodsImg": "http://images.wukate.com/8ca24b25-94e9-443b-af23-f92ec5742c35539345966153592340.jpg"
-        }
-      ]
+    },
+    mounted() {
+        this.selGoodsLabel();
+        this.getAllGoodsList();
     }
-  },
-  methods:{
-    onClickLeft(){
-      this.$router.push({ path:'/'})
-    }
-  }
 }
 </script>
 

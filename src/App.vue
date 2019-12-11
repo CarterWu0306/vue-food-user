@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <div style="overflow: auto">
-      <keep-alive>
+      <!--<keep-alive>-->
         <router-view/>
-      </keep-alive>
+      <!--</keep-alive>-->
     </div>
     <div class="tabbar" v-show="show">
       <van-tabbar v-model="active"
@@ -20,22 +20,34 @@
 
 <script>
 export default {
-  name: 'app',
-  data() {
-    return {
-      active: 'home',
-      show: true
-    }
-  },
-  computed:{
-    judjeShow(){
-      if (this.active === 'goods'){
-        this.show = false
-      }else{
-        this.show = true
+    name: 'app',
+    data() {
+      return {
+          active: 'home',
+          show: true
       }
+    },
+    watch:{
+        /*$route(to,from){
+            if (to.path === '/login'){
+                this.show = false;
+            }
+        }*/
+    },
+    computed:{
+      judjeShow(){
+        if (this.active === 'goods'){
+          this.show = false
+        }else{
+          this.show = true
+        }
+      }
+    },
+    mounted() {
+       /* if (this.$route.path === '/login'){
+            this.show = false;
+        }*/
     }
-  }
 }
 </script>
 

@@ -40,12 +40,14 @@ export default {
 <style lang="stylus" scoped>
   .order-content{
     background-color #f1f1f1
+    padding-top 10px
     .content{
       padding-bottom 10px
       position: relative
       .title{
         display:inline-block
         font-size 14px
+        margin-left 10px
       }
       .status{
         position: absolute
@@ -57,6 +59,7 @@ export default {
         font-size 18px
         margin-top 5px
         margin-right 5px
+        margin-left 20px
       }
       .time{
         display:inline-block

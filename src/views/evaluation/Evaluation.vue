@@ -11,7 +11,7 @@ import EvaluationTab from "./components/EvaluationTab";
 export default {
   name: 'evaluation',
   components: {
-    EvaluationCard,
+      EvaluationCard,
       EvaluationTab
   }
 }
