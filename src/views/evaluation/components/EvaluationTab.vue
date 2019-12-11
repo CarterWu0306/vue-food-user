@@ -7,10 +7,10 @@
         <evaluation-content></evaluation-content>
       </van-tab>
       <van-tab title="好评">
-        <evaluation-content></evaluation-content>
+        <evaluation-content starLevel="highLevel"></evaluation-content>
       </van-tab>
       <van-tab title="中差评">
-        <evaluation-content></evaluation-content>
+        <evaluation-content starLevel="lowLevel"></evaluation-content>
       </van-tab>
     </van-tabs>
   </div>

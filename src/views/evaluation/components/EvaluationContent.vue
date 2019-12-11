@@ -1,17 +1,17 @@
 <template>
   <div class="evaluationContent">
-    <div class="content" v-for="item in 2">
+    <div class="content" v-for="(item,index) in evaluationList" :key="item.evaluationId">
       <van-divider :style="{ color: '#bebebe', borderColor: '#bebebe' }"></van-divider>
       <van-image
         round
         width="1rem"
         height="1rem"
-        src="https://img.yzcdn.cn/vant/cat.jpeg">
+        :src="item.avatar">
       </van-image>
-      <span class="nickName">hehe</span>
+      <span class="nickName">{{item.nickName}}</span>
       <div class="rate">
         <van-rate
-          v-model="value"
+          v-model="item.orderScore"
           allow-half
           :readonly="true"
           void-icon="star"
@@ -19,45 +19,23 @@
         </van-rate>
       </div>
       <div class="text">
-        这是一条评价!这是一条评价!这是一条评价!这是一条评价!这是一条评价!这是一条评价!这是一条评价!
+        {{item.content}}
       </div>
       <div class="img">
-        <van-image
-          width="100"
-          height="100"
-          src="https://img.yzcdn.cn/vant/cat.jpeg"
-          @click="previewImg(0)">
+        <span style="margin-right: .15rem" v-for="(i,s) in item.images" :key="s">
+          <van-image
+            width="100"
+            height="100"
+            :src="i"
+            @click="previewImg(index,s)">
         </van-image>
-        <van-image
-          width="100"
-          height="100"
-          src="https://img.yzcdn.cn/vant/cat.jpeg"
-          @click="previewImg(1)">
-        </van-image>
-        <van-image
-          width="100"
-          height="100"
-          src="https://img.yzcdn.cn/vant/cat.jpeg"
-          @click="previewImg(2)">
-        </van-image>
-        <van-image
-          width="100"
-          height="100"
-          src="https://img.yzcdn.cn/vant/cat.jpeg"
-          @click="previewImg(3)">
-        </van-image>
-        <van-image
-          width="100"
-          height="100"
-          src="https://img.yzcdn.cn/vant/cat.jpeg"
-          @click="previewImg(4)">
-        </van-image>
-        <van-image
-          width="100"
-          height="100"
-          src="https://img.yzcdn.cn/vant/cat.jpeg"
-          @click="previewImg(5)">
-        </van-image>
+        </span>
+      </div>
+      <div class="reply" v-show="item.isReply === '1'">
+        商家回复:
+        <div class="replyContent">
+          {{item.replyContent}}
+        </div>
       </div>
     </div>
   </div>
@@ -65,30 +43,47 @@
 
 <script>
     import { ImagePreview } from 'vant';
+    import { getEvaluationByParams, sumEvaluation } from '@/api/evaluation'
     export default {
         name: "EvaluationContent",
+        props: {
+            starLevel: String
+        },
         data() {
             return{
-                value: 3.5
+                listQuery: {
+                    starLevel: ''
+                },
+                evaluationList: []
             }
         },
         methods:{
-            previewImg(index){
+            previewImg(i,s){
                 ImagePreview({
-                    images: [
-                        'https://img.yzcdn.cn/vant/cat.jpeg',
-                        'https://img.yzcdn.cn/vant/cat.jpeg',
-                        'https://img.yzcdn.cn/vant/cat.jpeg',
-                        'https://img.yzcdn.cn/vant/cat.jpeg',
-                        'https://img.yzcdn.cn/vant/cat.jpeg',
-                        'https://img.yzcdn.cn/vant/cat.jpeg'
-                    ],
-                    startPosition: index,
+                    images: this.evaluationList[i].images,
+                    startPosition: s,
                     onClose() {
                         // do something
                     }
                 });
+            },
+            getEvaluationByParams(){
+                getEvaluationByParams(this.listQuery).then(response => {
+                    const data = response.data;
+                    data.forEach(item => {
+                        item.images = item.images.split(';')
+                    });
+                    this.evaluationList = data;
+                }).catch(() => {
+
+                })
             }
+        },
+        mounted() {
+            if (this.starLevel){
+                this.listQuery.starLevel = this.starLevel
+            }
+            this.getEvaluationByParams();
         }
     }
 </script>
@@ -98,9 +93,9 @@
     .content{
       padding .5rem
       .nickName{
-        font-size .8rem
+        font-size .6rem
         position absolute
-        margin-top .1rem
+        margin-top .2rem
         margin-left .2rem
       }
       .rate{
@@ -110,10 +105,21 @@
         font-size .5rem
         font-weight 300
         margin-left 1.2rem
+        padding-top .1rem
+        padding-bottom .1rem
       }
       .img{
         margin-left 1.2rem
         margin-top .2rem
+      }
+      .reply{
+        font-size .4rem
+        font-weight 600
+        margin-left 1.2rem
+        margin-top .2rem
+        .replyContent{
+          margin-top .2rem
+        }
       }
     }
   }

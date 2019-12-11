@@ -22,13 +22,27 @@
 </template>
 
 <script>
+import { sumEvaluation } from '@/api/evaluation'
 export default {
     name: "EvaluationCard",
     data(){
         return{
-            value: 3.7,
-            total: 100
+            value: 5.0,
+            total: 0
         }
+    },
+    methods:{
+        sumEvaluation(){
+            sumEvaluation().then(response => {
+                const data = response.data;
+                console.log(data)
+                this.value = data.avgScore;
+                this.total = data.total;
+            })
+        }
+    },
+    mounted() {
+        this.sumEvaluation()
     }
 }
 </script>

@@ -29,6 +29,13 @@ export default {
       }
     },
     methods:{
+        selGoodsLabel(){
+            selGoodsLabel().then(response => {
+                this.labelList = response.data
+            }).catch((err) => {
+                console.log(err)
+            })
+        },
         getAllGoodsList(){
             getAllGoodsList().then(response => {
                 const data = response.data;
@@ -38,14 +45,7 @@ export default {
                 this.goodsList = data
                 this.flag = true
             }).catch(() => {
-
-            })
-        },
-        selGoodsLabel(){
-            selGoodsLabel().then(response => {
-                this.labelList = response.data
-            }).catch((err) => {
-                console.log(err)
+                this.flag = true
             })
         },
         onClickLeft(){
