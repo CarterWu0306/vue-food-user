@@ -44,6 +44,7 @@
                     this.$notify({ type: 'warning', message: '帐号或密码不能为空' });
                 }else{
                     this.$store.dispatch('user/login', this.loginForm).then(response => {
+                        this.$store.dispatch('user/getInfo')
                         this.$router.push({path: this.redirect || '/'})
                     }).catch(() => {
                     })

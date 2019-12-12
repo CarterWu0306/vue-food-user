@@ -6,13 +6,13 @@
       @click="onClick">
       <van-tab title="待处理订单">
         <div>
-          <order-content v-show="isLogin" :orderList="orderList"></order-content>
+          <order-content v-if="isLogin" :orderList="orderList"></order-content>
           <van-button class="loginBtn" v-show="!isLogin" plain type="info" to="login">去登录</van-button>
         </div>
       </van-tab>
       <van-tab title="全部订单">
         <div>
-          <order-content v-show="isLogin" :orderList="orderList"></order-content>
+          <order-content v-if="isLogin" :orderList="orderList"></order-content>
           <van-button class="loginBtn" v-show="!isLogin" plain type="info" to="login">去登录</van-button>
         </div>
       </van-tab>
@@ -22,6 +22,7 @@
 
 <script>
 import OrderContent from "./components/OrderContent";
+import { getOrdersByParam, getOrderList } from '@/api/order'
 export default {
     name: 'order',
     components:{
@@ -50,102 +51,14 @@ export default {
             }
         },
         getPendingOrderList(){
-            this.orderList = [
-                {
-                    orderId: 1,
-                    orderSn: 'snl2130129310',
-                    orderStatus: '-1',
-                    totalMoney: 100,
-                    realTotalMoney: 80,
-                    isAppraise: '0',
-                    orderCreateTime: '2019-11-16 17:34'
-                },
-                {
-                    orderId: 2,
-                    orderSn: 'snl2130129310',
-                    orderStatus: '0',
-                    totalMoney: 100,
-                    realTotalMoney: 80,
-                    isAppraise: '0',
-                    orderCreateTime: '2019-11-16 17:34'
-                }
-            ]
+            getOrdersByParam({ userId: this.$store.getters.userId, tabType: 'PendingOrders'}).then(response => {
+                this.orderList = response.data
+            })
         },
         getAllOrderList(){
-            this.orderList = [
-                {
-                    orderId: 1,
-                    orderSn: 'snl2130129310',
-                    orderStatus: '-1',
-                    totalMoney: 100,
-                    realTotalMoney: 80,
-                    isAppraise: '0',
-                    orderCreateTime: '2019-11-16 17:34'
-                },
-                {
-                    orderId: 2,
-                    orderSn: 'snl2130129310',
-                    orderStatus: '0',
-                    totalMoney: 100,
-                    realTotalMoney: 80,
-                    isAppraise: '0',
-                    orderCreateTime: '2019-11-16 17:34'
-                },
-                {
-                    orderId: 3,
-                    orderSn: 'snl2130129310',
-                    orderStatus: '1',
-                    totalMoney: 100,
-                    realTotalMoney: 80,
-                    isAppraise: '1',
-                    orderCreateTime: '2019-11-16 17:34'
-                },
-                {
-                    orderId: 4,
-                    orderSn: 'snl2130129310',
-                    orderStatus: '-2',
-                    totalMoney: 100,
-                    realTotalMoney: 80,
-                    isAppraise: '0',
-                    orderCreateTime: '2019-11-16 17:34'
-                },
-                {
-                    orderId: 5,
-                    orderSn: 'snl2130129310',
-                    orderStatus: '0',
-                    totalMoney: 100,
-                    realTotalMoney: 80,
-                    isAppraise: '0',
-                    orderCreateTime: '2019-11-16 17:34'
-                },
-                {
-                    orderId: 6,
-                    orderSn: 'snl2130129310',
-                    orderStatus: '0',
-                    totalMoney: 100,
-                    realTotalMoney: 80,
-                    isAppraise: '0',
-                    orderCreateTime: '2019-11-16 17:34'
-                },
-                {
-                    orderId: 7,
-                    orderSn: 'snl2130129310',
-                    orderStatus: '0',
-                    totalMoney: 100,
-                    realTotalMoney: 80,
-                    isAppraise: '0',
-                    orderCreateTime: '2019-11-16 17:34'
-                },
-                {
-                    orderId: 8,
-                    orderSn: 'snl2130129310',
-                    orderStatus: '0',
-                    totalMoney: 100,
-                    realTotalMoney: 80,
-                    isAppraise: '0',
-                    orderCreateTime: '2019-11-16 17:34'
-                }
-            ]
+            getOrdersByParam({ userId: this.$store.getters.userId, tabType: ''}).then(response => {
+                this.orderList = response.data
+            })
         }
     },
     mounted() {

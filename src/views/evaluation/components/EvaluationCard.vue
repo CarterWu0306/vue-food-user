@@ -35,7 +35,6 @@ export default {
         sumEvaluation(){
             sumEvaluation().then(response => {
                 const data = response.data;
-                console.log(data)
                 this.value = data.avgScore;
                 this.total = data.total;
             })
