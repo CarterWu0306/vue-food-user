@@ -1,9 +1,9 @@
 import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, removeToken, getUserId, setUserId } from '@/utils/auth'
 
 const state = {
   token: getToken(),
-  userId: '',
+  userId: getUserId(),
   avatar: ''
 }
 
@@ -45,13 +45,14 @@ const actions = {
           reject('Verification failed, please Login again.')
         }
 
-        commit('SET_USERID', userId)
+        commit('SET_USERID', data.userId)
+        setUserId(data.userId)
 
         // 设置头像
-        if (avatar === '') {
+        if (data.avatar === '') {
           commit('SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
         } else {
-          commit('SET_AVATAR', avatar)
+          commit('SET_AVATAR', data.avatar)
         }
         resolve(data)
       }).catch(error => {
