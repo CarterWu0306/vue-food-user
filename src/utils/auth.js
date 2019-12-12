@@ -22,3 +22,7 @@ export function getUserId() {
 export function setUserId(userId) {
   return Cookies.set(UserId, userId)
 }
+
+export function removeUserId() {
+  return Cookies.remove(UserId)
+}

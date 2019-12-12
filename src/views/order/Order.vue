@@ -6,13 +6,13 @@
       @click="onClick">
       <van-tab title="待处理订单">
         <div>
-          <order-content v-if="isLogin" :orderList="orderList"></order-content>
+          <order-content v-if="isLogin" :orderList="orderList" @reload="getPendingOrderList"></order-content>
           <van-button class="loginBtn" v-show="!isLogin" plain type="info" to="login">去登录</van-button>
         </div>
       </van-tab>
       <van-tab title="全部订单">
         <div>
-          <order-content v-if="isLogin" :orderList="orderList"></order-content>
+          <order-content v-if="isLogin" :orderList="orderList" @reload="getAllOrderList"></order-content>
           <van-button class="loginBtn" v-show="!isLogin" plain type="info" to="login">去登录</van-button>
         </div>
       </van-tab>
@@ -22,7 +22,7 @@
 
 <script>
 import OrderContent from "./components/OrderContent";
-import { getOrdersByParam, getOrderList } from '@/api/order'
+import { getOrdersByParam } from '@/api/order'
 export default {
     name: 'order',
     components:{
@@ -51,14 +51,18 @@ export default {
             }
         },
         getPendingOrderList(){
-            getOrdersByParam({ userId: this.$store.getters.userId, tabType: 'PendingOrders'}).then(response => {
-                this.orderList = response.data
-            })
+            if (this.$store.getters.token){
+                getOrdersByParam({ userId: this.$store.getters.userId, tabType: 'PendingOrders'}).then(response => {
+                    this.orderList = response.data
+                })
+            }
         },
         getAllOrderList(){
-            getOrdersByParam({ userId: this.$store.getters.userId, tabType: ''}).then(response => {
-                this.orderList = response.data
-            })
+            if (this.$store.getters.token) {
+                getOrdersByParam({userId: this.$store.getters.userId, tabType: ''}).then(response => {
+                    this.orderList = response.data
+                })
+            }
         }
     },
     mounted() {

@@ -21,7 +21,7 @@
             {{order.orderCreateTime}}
           </div>
           <div class="button">
-            <van-button size="small" v-show="order.orderStatus!=='1'">确认订单</van-button>
+            <van-button size="small" v-show="order.orderStatus!=='1'" @click="confirmOrder(order.orderId)">确认订单</van-button>
             <van-button size="small" plain type="info" v-show="order.isAppraise!=='1'">去评价</van-button>
           </div>
         </div>
@@ -31,9 +31,25 @@
 </template>
 
 <script>
+import { completeOrder } from '@/api/order'
 export default {
     name: "OrderContent",
-    props:['orderList']
+    props:['orderList'],
+    methods: {
+        confirmOrder(orderId){
+            this.$dialog.confirm({
+                message: '是否确认订单',
+                confirmButtonText: '确认'
+            }).then(() => {
+                completeOrder({ orderId: orderId}).then(response => {
+                    this.$notify({ type: 'success', message: response.message });
+                    this.$emit('reload')
+                })
+            }).catch(() => {
+                // on cancel
+            });
+        }
+    }
 }
 </script>
 
