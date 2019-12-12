@@ -22,7 +22,7 @@
           </div>
           <div class="button">
             <van-button size="small" v-show="order.orderStatus!=='1'" @click="confirmOrder(order.orderId)">确认订单</van-button>
-            <van-button size="small" plain type="info" v-show="order.isAppraise!=='1'">去评价</van-button>
+            <van-button size="small" plain type="info" v-show="order.isAppraise!=='1' && order.orderStatus ==='1'" :to="{name:'evaluationPage', params: { orderId: order.orderId }}">去评价</van-button>
           </div>
         </div>
       </van-panel>

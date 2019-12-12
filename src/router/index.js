@@ -6,6 +6,7 @@ import Home from '../views/home/Home'
 import Goods from '../views/goods/Goods'
 import Order from '../views/order/Order'
 import Evaluation from '../views/evaluation/Evaluation'
+import EvaluationPage from "../views/evaluation/components/EvaluationPage";
 import User from '../views/user/User'
 
 Vue.use(Router)
@@ -41,6 +42,11 @@ export default new Router({
       path: '/evaluation',
       name: 'evaluation',
       component: Evaluation
+    },
+    {
+      path: '/evaluationPage/:orderId',
+      name: 'evaluationPage',
+      component: EvaluationPage
     },
     {
       path: '/user',
