@@ -14,3 +14,12 @@ export function getEvaluationByParams(params) {
     params
   })
 }
+
+export function uploadImage(data) {
+  return request({
+    url: '/food-evaluation/evaluation/uploadImage',
+    method: 'post',
+    headers: { "Content-Type": "multipart/form-data" },
+    data: data
+  })
+}
