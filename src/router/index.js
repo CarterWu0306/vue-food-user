@@ -8,6 +8,7 @@ import Order from '../views/order/Order'
 import Evaluation from '../views/evaluation/Evaluation'
 import EvaluationPage from "../views/evaluation/components/EvaluationPage";
 import User from '../views/user/User'
+import UserInfo from "../views/user/components/UserInfo";
 
 Vue.use(Router)
 
@@ -52,6 +53,11 @@ export default new Router({
       path: '/user',
       name: 'user',
       component: User
+    },
+    {
+      path: '/userInfo',
+      name: 'userInfo',
+      component: UserInfo
     }
   ]
 })

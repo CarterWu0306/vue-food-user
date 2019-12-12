@@ -5,16 +5,17 @@
         round
         width="2.5rem"
         height="2.5rem"
-        src="http://images.wukate.com/defaultUser.jpg">
+        :src="userInfo.avatar">
       </van-image>
-      <span class="nickName">假装躺在云上好轻松</span>
+      <span class="nickName">{{userInfo.nickName}}</span>
     </div>
   </div>
 </template>
 
 <script>
     export default {
-        name: "UserHead"
+        name: "UserHead",
+        props: ['userInfo']
     }
 </script>
 
