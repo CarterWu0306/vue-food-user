@@ -1,7 +1,7 @@
 import axios from 'axios'
 import store from '@/store'
 import { Notify } from 'vant';
-import { getToken } from '@/utils/auth'
+import { getToken, removeToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
@@ -59,6 +59,11 @@ service.interceptors.response.use(
   error => {
     const res = error.response.data
     console.log('err' + error) // for debug
+    console.log(res.code)
+    if (res.code === 401){
+      removeToken()
+      location.reload()
+    }
 
     return Promise.reject(error)
   }
