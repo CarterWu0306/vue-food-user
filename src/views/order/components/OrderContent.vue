@@ -21,7 +21,8 @@
             {{order.orderCreateTime}}
           </div>
           <div class="button">
-            <van-button size="small" v-show="order.orderStatus!=='1'" @click="confirmOrder(order.orderId)">确认订单</van-button>
+            <van-button size="small" type="info" v-show="order.payStatus === '0'" @click="confirmPay(order.orderId)">去支付</van-button>
+            <van-button size="small" v-show="order.orderStatus === '0'" @click="confirmOrder(order.orderId)">确认订单</van-button>
             <van-button size="small" plain type="info" v-show="order.isAppraise!=='1' && order.orderStatus ==='1'" :to="{name:'evaluationPage', params: { orderId: order.orderId }}">去评价</van-button>
           </div>
         </div>
@@ -45,6 +46,16 @@ export default {
                     this.$notify({ type: 'success', message: response.message });
                     this.$emit('reload')
                 })
+            }).catch(() => {
+                // on cancel
+            });
+        },
+        confirmPay(orderId){
+            this.$dialog.confirm({
+                message: '是否确认支付',
+                confirmButtonText: '支付'
+            }).then(() => {
+                console.log(orderId)
             }).catch(() => {
                 // on cancel
             });
