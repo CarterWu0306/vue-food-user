@@ -32,7 +32,10 @@ export default new Router({
     {
       path: '/goods',
       name: 'goods',
-      component: Goods
+      component: Goods,
+      meta: {
+        keepAlive: true, //此组件需要被缓存
+      }
     },
     {
       path: '/order',

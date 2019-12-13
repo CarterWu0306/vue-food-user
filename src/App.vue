@@ -1,9 +1,10 @@
 <template>
   <div id="app">
     <div style="overflow: auto">
-      <!--<keep-alive>-->
-        <router-view/>
-      <!--</keep-alive>-->
+      <keep-alive>
+        <router-view v-if="$route.meta.keepAlive"></router-view>
+      </keep-alive>
+      <router-view v-if="!$route.meta.keepAlive"></router-view>
     </div>
     <div class="tabbar" v-show="show">
       <van-tabbar v-model="active"

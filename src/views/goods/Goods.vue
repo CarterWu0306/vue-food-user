@@ -6,7 +6,9 @@
       left-arrow
       @click-left="onClickLeft">
     </van-nav-bar>
-    <menu-body :goodsList="goodsList" :labelList="labelList" v-if="flag"></menu-body>
+    <div style="height: 15.2rem">
+      <menu-body :goodsList="goodsList" :labelList="labelList" v-if="flag"></menu-body>
+    </div>
     <shop-cart :goodsList="goodsList"></shop-cart>
   </div>
 </template>
