@@ -152,19 +152,18 @@
                   this.$notify({ type: 'warning', message: '购物车为空' });
                   return;
               }
-              this.selected();
-              this.orderForm = {
-                  userId: Number(this.$store.getters.userId),
-                  totalMoney: this.totalPrice.toFixed(2),
-                  realTotalMoney: this.totalPrice.toFixed(2),
-                  deductionScore: 0,
-                  goodsList: this.selectedFoods
-              }
-              this.listShow = true
-              this.$dialog.confirm({
-                  message: '是否确认下单',
-                  confirmButtonText: '下单'
-              }).then(() => {
+              getInfo().then(response => {
+                  this.allScore = response.data.userScore
+                  this.selected();
+                  this.orderForm = {
+                      userId: Number(this.$store.getters.userId),
+                      totalMoney: this.totalPrice.toFixed(2),
+                      realTotalMoney: this.totalPrice.toFixed(2),
+                      deductionScore: 0,
+                      goodsList: this.selectedFoods
+                  }
+                  this.listShow = true
+
                   if (this.canUseSocre>0){
                       this.$dialog.confirm({
                           message: '是否使用'+ this.canUseSocre +'积分抵扣'+this.canUseSocre/10+'元',
@@ -174,26 +173,48 @@
                           this.orderForm.deductionScore = this.canUseSocre
 
                           //使用积分抵扣下单
+                          this.$dialog.confirm({
+                              message: '是否确认下单',
+                              confirmButtonText: '下单'
+                          }).then(() => {
+                              placeOrderByUser(this.orderForm).then(response => {
+                                  this.empty();
+                                  this.$notify({ type: 'success', message: '下单成功' });
+                                  this.$router.push({ path:'/order'})
+                              })
+                          }).catch(() => {
+                              // on cancel
+                          });
+                      }).catch(() => {
+                          //不使用积分抵扣下单
+                          this.$dialog.confirm({
+                              message: '是否确认下单',
+                              confirmButtonText: '下单'
+                          }).then(() => {
+                              placeOrderByUser(this.orderForm).then(response => {
+                                  this.empty();
+                                  this.$notify({ type: 'success', message: '下单成功' });
+                                  this.$router.push({ path:'/order'})
+                              })
+                          }).catch(() => {
+                              // on cancel
+                          });
+                      });
+                  }else{
+                      this.$dialog.confirm({
+                          message: '是否确认下单',
+                          confirmButtonText: '下单'
+                      }).then(() => {
                           placeOrderByUser(this.orderForm).then(response => {
+                              this.empty();
                               this.$notify({ type: 'success', message: '下单成功' });
                               this.$router.push({ path:'/order'})
                           })
                       }).catch(() => {
-                          //不使用积分抵扣下单
-                          placeOrderByUser(this.orderForm).then(response => {
-                              this.$notify({ type: 'success', message: '下单成功' });
-                              this.$router.push({ path:'/order'})
-                          })
+                          // on cancel
                       });
-                  }else{
-                      placeOrderByUser(this.orderForm).then(response => {
-                          this.$notify({ type: 'success', message: '下单成功' });
-                          this.$router.push({ path:'/order'})
-                      })
                   }
-              }).catch(() => {
-                  // on cancel
-              });
+              })
           }
       },
       mounted() {
