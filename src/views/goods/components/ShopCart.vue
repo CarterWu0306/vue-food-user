@@ -165,40 +165,32 @@
                   message: '是否确认下单',
                   confirmButtonText: '下单'
               }).then(() => {
-                  this.$dialog.confirm({
-                      message: '是否使用'+ this.canUseSocre +'积分抵扣'+this.canUseSocre/10+'元',
-                      confirmButtonText: '使用'
-                  }).then(() => {
-                      this.orderForm.realTotalMoney = (this.orderForm.realTotalMoney - this.canUseSocre/10).toFixed(2);
-                      this.orderForm.deductionScore = this.canUseSocre
+                  if (this.canUseSocre>0){
+                      this.$dialog.confirm({
+                          message: '是否使用'+ this.canUseSocre +'积分抵扣'+this.canUseSocre/10+'元',
+                          confirmButtonText: '使用'
+                      }).then(() => {
+                          this.orderForm.realTotalMoney = (this.orderForm.realTotalMoney - this.canUseSocre/10).toFixed(2);
+                          this.orderForm.deductionScore = this.canUseSocre
 
-                      //使用积分抵扣下单
+                          //使用积分抵扣下单
+                          placeOrderByUser(this.orderForm).then(response => {
+                              this.$notify({ type: 'success', message: '下单成功' });
+                              this.$router.push({ path:'/order'})
+                          })
+                      }).catch(() => {
+                          //不使用积分抵扣下单
+                          placeOrderByUser(this.orderForm).then(response => {
+                              this.$notify({ type: 'success', message: '下单成功' });
+                              this.$router.push({ path:'/order'})
+                          })
+                      });
+                  }else{
                       placeOrderByUser(this.orderForm).then(response => {
                           this.$notify({ type: 'success', message: '下单成功' });
-                          this.$dialog.confirm({
-                              message: '是否立即支付'+this.orderForm.realTotalMoney+'元',
-                              confirmButtonText: '支付'
-                          }).then(() => {
-                              this.$notify({ type: 'success', message: '支付成功' });
-                          }).catch(() => {
-                              // on cancel
-                              //跳转订单页面
-                          });
+                          this.$router.push({ path:'/order'})
                       })
-                      console.log(this.orderForm)
-                  }).catch(() => {
-                      //不使用积分抵扣下单
-                      this.$notify({ type: 'success', message: '下单成功' });
-                      this.$dialog.confirm({
-                          message: '是否立即支付'+this.orderForm.realTotalMoney+'元',
-                          confirmButtonText: '支付'
-                      }).then(() => {
-                          this.$notify({ type: 'success', message: '支付成功' });
-                      }).catch(() => {
-                          // on cancel
-                      });
-                      console.log(this.orderForm)
-                  });
+                  }
               }).catch(() => {
                   // on cancel
               });
