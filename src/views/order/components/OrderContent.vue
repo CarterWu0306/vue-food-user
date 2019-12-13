@@ -18,7 +18,7 @@
         </div>
         <div slot="footer">
           <div class="time">
-            {{order.orderCreateTime}}
+            {{formatDate(order.orderCreateTime)}}
           </div>
           <div class="button">
             <van-button size="small" type="info" v-show="order.payStatus === '0'" @click="confirmPay(order.orderId,order.realTotalMoney)">去支付</van-button>
@@ -32,12 +32,19 @@
 </template>
 
 <script>
+import moment from 'moment'
 import { completeOrder } from '@/api/order'
 import { payOrder } from '@/api/feign'
 export default {
     name: "OrderContent",
     props:['orderList'],
     methods: {
+        formatDate(date){
+            if (date === undefined){
+                return ''
+            }
+            return moment(date).format('YYYY-MM-DD HH:mm:ss')
+        },
         confirmOrder(orderId){
             this.$dialog.confirm({
                 message: '是否确认订单',
