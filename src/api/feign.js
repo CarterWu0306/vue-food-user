@@ -15,3 +15,11 @@ export function appriseOrder(data) {
     data
   })
 }
+
+export function payOrder(data) {
+  return request({
+    url: '/food-feign/placeOrder/payOrder',
+    method: 'post',
+    data
+  })
+}

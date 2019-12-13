@@ -14,7 +14,7 @@
           </div>
         </div>
         <div class="price">
-          总金额￥{{order.totalMoney}}
+          总金额￥{{order.totalMoney}} 应付金额￥{{order.realTotalMoney}}
         </div>
         <div slot="footer">
           <div class="time">
@@ -33,6 +33,7 @@
 
 <script>
 import { completeOrder } from '@/api/order'
+import { payOrder } from '@/api/feign'
 export default {
     name: "OrderContent",
     props:['orderList'],
@@ -55,7 +56,10 @@ export default {
                 message: '是否立即支付'+realTotalMoney+'元',
                 confirmButtonText: '支付'
             }).then(() => {
-                this.$notify({ type: 'success', message: '支付成功' });
+                payOrder({ orderId: orderId, userId: Number(this.$store.getters.userId), realTotalMoney: realTotalMoney.toFixed(2) }).then(response => {
+                    this.$notify({ type: 'success', message: '支付成功' });
+                    this.$emit('reload')
+                })
             }).catch(() => {
                 // on cancel
             });
