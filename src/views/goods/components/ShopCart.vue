@@ -13,7 +13,8 @@
         </div>
         <div class="content-right">
           <div class="pay">
-            <van-button type="info">结算</van-button>
+            <van-button type="info" v-if="isLogin" @click="placeOrder">结算</van-button>
+            <van-button type="info" v-if="!isLogin" to="login">去登录</van-button>
           </div>
         </div>
       </div>
@@ -48,74 +49,164 @@
 </template>
 
 <script>
+  import { getInfo } from "@/api/user"
+  import { placeOrderByUser } from '@/api/feign'
   export default {
-    name: "ShopCart",
-    props:{
-        goodsList: Array
-    },
-    data () {
-      return{
-        selectedFoods: [],
-        listShow: false
-      }
-    },
-    computed: {
-      totalCount() {
-        let count = 0;
-        this.goodsList.forEach((goods) => {
-          count += goods.goods_num;
-        });
-        return count;
+      name: "ShopCart",
+      props:{
+          goodsList: Array
       },
-      totalPrice() {
-        let price = 0;
-        this.goodsList.forEach((goods) => {
-          if (goods.goods_num) {
-            price += goods.goodsPrice * goods.goods_num;
+      data () {
+        return{
+            selectedFoods: [],
+            listShow: false,
+            allScore: 0,
+            orderForm: {
+                userId: '',
+                totalMoney: 0.00,
+                realTotalMoney: 0.00,
+                deductionScore: 0,
+                goodsList: []
+            }
+        }
+      },
+      computed: {
+          isLogin(){
+              if (this.$store.getters.token){
+                  return true
+              }else{
+                  return false
+              }
+          },
+          totalCount() {
+            let count = 0;
+            this.goodsList.forEach((goods) => {
+              count += goods.goods_num;
+            });
+            return count;
+          },
+          totalPrice() {
+            let price = 0;
+            this.goodsList.forEach((goods) => {
+              if (goods.goods_num) {
+                price += goods.goodsPrice * goods.goods_num;
+              }
+            });
+            if (price===0){
+              this.selectedFoods = []
+            }
+            return price;
+          },
+          canUseSocre(){
+              if (this.orderForm.totalMoney <= this.allScore/10){
+                  return this.orderForm.totalMoney * 10
+              }else {
+                  return this.allScore;
+              }
           }
-        });
-        if (price===0){
-          this.selectedFoods = []
-        }
-        return price;
-      }
-    },
-    methods:{
-      shopCartClick(){
-        if (!this.totalCount){
-          return;
-        }
-        this.selected();
-        this.listShow = !this.listShow
       },
-      hideList(){
-        this.listShow = !this.listShow
-      },
-      selected() {
-        this.selectedFoods = [];
-        this.goodsList.forEach((food) =>{
-          if (food.goods_num){
-            this.selectedFoods.push(food)
+      methods:{
+          getInfo(){
+              if (this.$store.getters.token){
+                  getInfo().then(response => {
+                      this.allScore = response.data.userScore
+                  })
+              }
+          },
+          shopCartClick(){
+            if (!this.totalCount){
+                return;
+            }
+            this.selected();
+            this.listShow = !this.listShow
+          },
+          hideList(){
+            this.listShow = !this.listShow
+          },
+          selected() {
+            this.selectedFoods = [];
+            this.goodsList.forEach((food) =>{
+              if (food.goods_num){
+                this.selectedFoods.push(food)
+              }
+            })
+          },
+          addGoods(index) {
+            this.goodsList[index].goods_num++;
+          },
+          decreaseGoods(index) {
+            if (this.goodsList[index].goods_num>0){
+              this.goodsList[index].goods_num--
+            }
+            this.selected();
+          },
+          empty() {
+            this.selectedFoods = [];
+            this.goodsList.forEach((food) => {
+              food.goods_num = 0
+            });
+            this.listShow = false
+          },
+          placeOrder(){
+              if (!this.totalCount){
+                  this.$notify({ type: 'warning', message: '购物车为空' });
+                  return;
+              }
+              this.selected();
+              this.orderForm = {
+                  userId: Number(this.$store.getters.userId),
+                  totalMoney: this.totalPrice.toFixed(2),
+                  realTotalMoney: this.totalPrice.toFixed(2),
+                  deductionScore: 0,
+                  goodsList: this.selectedFoods
+              }
+              this.listShow = true
+              this.$dialog.confirm({
+                  message: '是否确认下单',
+                  confirmButtonText: '下单'
+              }).then(() => {
+                  this.$dialog.confirm({
+                      message: '是否使用'+ this.canUseSocre +'积分抵扣'+this.canUseSocre/10+'元',
+                      confirmButtonText: '使用'
+                  }).then(() => {
+                      this.orderForm.realTotalMoney = (this.orderForm.realTotalMoney - this.canUseSocre/10).toFixed(2);
+                      this.orderForm.deductionScore = this.canUseSocre
+
+                      //使用积分抵扣下单
+                      placeOrderByUser(this.orderForm).then(response => {
+                          this.$notify({ type: 'success', message: '下单成功' });
+                          this.$dialog.confirm({
+                              message: '是否立即支付'+this.orderForm.realTotalMoney+'元',
+                              confirmButtonText: '支付'
+                          }).then(() => {
+                              this.$notify({ type: 'success', message: '支付成功' });
+                          }).catch(() => {
+                              // on cancel
+                              //跳转订单页面
+                          });
+                      })
+                      console.log(this.orderForm)
+                  }).catch(() => {
+                      //不使用积分抵扣下单
+                      this.$notify({ type: 'success', message: '下单成功' });
+                      this.$dialog.confirm({
+                          message: '是否立即支付'+this.orderForm.realTotalMoney+'元',
+                          confirmButtonText: '支付'
+                      }).then(() => {
+                          this.$notify({ type: 'success', message: '支付成功' });
+                      }).catch(() => {
+                          // on cancel
+                      });
+                      console.log(this.orderForm)
+                  });
+              }).catch(() => {
+                  // on cancel
+              });
           }
-        })
       },
-      addGoods(index) {
-        this.goodsList[index].goods_num++;
-      },
-      decreaseGoods(index) {
-        if (this.goodsList[index].goods_num>0){
-          this.goodsList[index].goods_num--
-        }
-        this.selected();
-      },
-      empty() {
-        this.selectedFoods = [];
-        this.goods.forEach((food) => {
-          food.goods_num = 0
-        });
-        this.listShow = false
+      mounted() {
+        this.getInfo()
       }
-    }
   }
 </script>
 

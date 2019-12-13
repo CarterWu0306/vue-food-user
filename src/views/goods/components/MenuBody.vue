@@ -79,7 +79,6 @@ export default {
 <style lang="stylus">
   html, body, #menuBody
     height: 15.2rem
-
   .menuBody
     span
       font-size .5rem

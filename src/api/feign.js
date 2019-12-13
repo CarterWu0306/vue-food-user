@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function placeOrderByAdmin(data) {
+export function placeOrderByUser(data) {
   return request({
-    url: '/food-feign/placeOrder/placeOrderByAdmin',
+    url: '/food-feign/placeOrder/placeOrderByUser',
     method: 'post',
     data
   })
