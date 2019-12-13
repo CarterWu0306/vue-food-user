@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie'
 
-const TokenKey = 'vue-manager'
-const UserId = 'vue-userId'
+const TokenKey = 'food-user'
+const UserId = 'food-user-userId'
 
 export function getToken() {
   return Cookies.get(TokenKey)
