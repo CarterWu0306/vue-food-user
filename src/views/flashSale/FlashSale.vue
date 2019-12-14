@@ -1,6 +1,6 @@
 <template>
   <div>
-    <van-button round class="btn" v-show="!isLogin" type="info" to="login">去登录</van-button>
+    <van-button class="loginBtn" v-show="!isLogin" plain type="info" to="login">去登录</van-button>
     <div v-show="isLogin" v-for="item in flashSaleList" :key="item.flashSaleId">
       <div class="evaluation-card-background">
         <div class="evaluation-card">
@@ -72,6 +72,10 @@
 </script>
 
 <style lang="stylus" scoped>
+  .loginBtn{
+    margin-left 40%
+    margin-top 40%
+  }
   .evaluation-card-background{
     padding 10px
     .evaluation-card{
