@@ -62,6 +62,8 @@
                 rush({ flashSaleId:flashSaleId, userId: Number(this.$store.getters.userId) }).then(response => {
                     this.$notify({ type: 'success', message: response.message });
                     this.getFlashSaleList()
+                }).catch(() => {
+
                 })
             }
         },
