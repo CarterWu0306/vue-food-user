@@ -44,7 +44,7 @@
           left-icon="closed-eye"
           type="password"
           readonly>
-          <van-button slot="button" size="small" type="primary">修改密码</van-button>
+          <van-button slot="button" size="small" type="primary" @click="changePwd">修改密码</van-button>
         </van-field>
         <van-field
           :value="userForm.userPhone"
@@ -54,16 +54,30 @@
         </van-field>
       </van-cell-group>
     </div>
+    <van-dialog
+      v-model="show"
+      title="请输入新密码"
+      show-cancel-button
+      :beforeClose="beforeClose"
+    >
+      <van-field
+        v-model="password"
+        placeholder="请输入"
+        type="password">
+      </van-field>
+    </van-dialog>
   </div>
 </template>
 
 <script>
-    import { uploadUserImage, updateUser } from '@/api/user'
+    import { uploadUserImage, updateUser, changePwd } from '@/api/user'
     export default {
         name: "UserInfo",
         data() {
             return{
-                userForm: {}
+                userForm: {},
+                show: false,
+                password: ''
             }
         },
         methods: {
@@ -84,6 +98,24 @@
                         this.$notify({ type: 'success', message: '头像更换成功' });
                     })
                 })
+            },
+            changePwd(){
+                this.show = true
+            },
+            beforeClose(action, done){
+                if(action === 'confirm') {
+                    changePwd({ userId: this.userForm.userId, password: this.password}).then(response => {
+                        this.$notify({ type: 'success', message: response.message + '!请重新登录!' });
+                    })
+                    done() //关闭
+                    this.$store.dispatch('user/logout').then(() => {
+                        this.$router.push({ path:'/login'})
+                    }).catch(() => {
+
+                    })
+                }else if(action === 'cancel') {
+                    done() //关闭
+                }
             }
         },
         mounted() {
