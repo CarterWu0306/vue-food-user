@@ -4,7 +4,7 @@
       <user-head :userInfo="userInfo"></user-head>
     </div>
     <div class="cell">
-      <user-cell :userInfo="userInfo"></user-cell>
+      <user-cell v-if="isLogin" :userInfo="userInfo"></user-cell>
     </div>
     <van-button round class="btn" v-show="!isLogin" type="info" to="login">去登录</van-button>
     <van-button round class="btn" color="#88AED5" v-show="isLogin" type="info" @click="handleLogout">退出登录</van-button>
@@ -76,9 +76,14 @@ export default {
 </script>
 
 <style lang="stylus">
-  .btn{
-    width 90%
-    margin-left 5%
-    margin-top 7rem
+  .user{
+    .cell{
+      height 2.5rem
+    }
+    .btn{
+      width 90%
+      margin-left 5%
+      margin-top 7rem
+    }
   }
 </style>

@@ -37,3 +37,20 @@ export function changePwd(data) {
     data
   })
 }
+
+export function uploadUserImage(data) {
+  return request({
+    url: '/food-user/user/uploadUserImage',
+    method: 'post',
+    headers: { "Content-Type": "multipart/form-data" },
+    data: data
+  })
+}
+
+export function addUser(data) {
+  return request({
+    url: '/food-user/user/addUser',
+    method: 'post',
+    data
+  })
+}
