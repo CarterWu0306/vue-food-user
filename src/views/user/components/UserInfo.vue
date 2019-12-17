@@ -104,15 +104,20 @@
             },
             beforeClose(action, done){
                 if(action === 'confirm') {
-                    changePwd({ userId: this.userForm.userId, password: this.password}).then(response => {
-                        this.$notify({ type: 'success', message: response.message + '!请重新登录!' });
-                    })
-                    done() //关闭
-                    this.$store.dispatch('user/logout').then(() => {
-                        this.$router.push({ path:'/login'})
-                    }).catch(() => {
+                    if (this.password.length<6){
+                        this.$notify({ type: 'warning', message: '密码不能小于6位' });
+                        done() //关闭
+                    }else{
+                        changePwd({ userId: this.userForm.userId, password: this.password}).then(response => {
+                            this.$notify({ type: 'success', message: response.message + '!请重新登录!' });
+                        })
+                        done() //关闭
+                        this.$store.dispatch('user/logout').then(() => {
+                            this.$router.push({ path:'/login'})
+                        }).catch(() => {
 
-                    })
+                        })
+                    }
                 }else if(action === 'cancel') {
                     done() //关闭
                 }
