@@ -58,13 +58,12 @@
 </template>
 
 <script>
+    import { uploadUserImage, updateUser } from '@/api/user'
     export default {
         name: "UserInfo",
         data() {
             return{
-                userForm:{
-
-                }
+                userForm: {}
             }
         },
         methods: {
@@ -75,8 +74,16 @@
                 let routerParams = this.$route.params
                 this.userForm = routerParams
             },
-            afterRead(){
-                console.log("头像更换成功")
+            afterRead(file){
+                let formdata = new FormData()
+                formdata.append("file", file.file)
+                uploadUserImage(formdata).then(response =>{
+                    file.content = response.data
+                    this.userForm.avatar = response.data
+                    updateUser({ userId: this.userForm.userId, avatar: response.data, username: this.userForm.username, userType: 3 }).then(response => {
+                        this.$notify({ type: 'success', message: '头像更换成功' });
+                    })
+                })
             }
         },
         mounted() {
