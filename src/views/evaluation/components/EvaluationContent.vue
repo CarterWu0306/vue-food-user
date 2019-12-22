@@ -27,6 +27,7 @@
             width="100"
             height="100"
             :src="i"
+            v-show="i!==''"
             @click="previewImg(index,s)">
         </van-image>
         </span>
