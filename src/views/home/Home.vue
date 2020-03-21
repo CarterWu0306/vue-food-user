@@ -1,5 +1,10 @@
 <template>
   <div class="home">
+    <van-image
+      width="100%"
+      height="200"
+      src="http://images.wukate.com/menuAd1.jpg">
+    </van-image>
     <div class="flashSale">
       <van-image
         width="100%"
